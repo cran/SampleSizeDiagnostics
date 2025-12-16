@@ -13,14 +13,17 @@ SampleSizeDiagnostics(sn, sp, p, w = 0.1, CI = 0.95)
 
 \item{p}{Prevalence of the disease.}
 
-\item{w}{Desired width of the confidence interval (default is 0.10).}
+\item{w}{Desired half-width (margin of error) of the confidence interval. 
+This is the maximum distance from the point estimate to either CI boundary.
+For example, w = 0.1 means the CI will extend ±0.1 from the point estimate,
+creating a total CI width of 0.2. Must be between 0 and 1. (default is 0.10).}
 
 \item{CI}{Confidence interval level, either 0.95 or 0.9 (default is 0.95). Only 0.95 and 0.9 are allowed.}
 }
 \value{
 A data frame containing the calculated sample sizes and input parameters:
 \describe{
-  \item{Precision}{Desired width of the confidence interval}
+  \item{Precision}{Desired half-width of the CI (margin of error). Total width = 2 × Precision}
   \item{Sensitivity}{Sensitivity of the diagnostic test}
   \item{Specificity}{Specificity of the diagnostic test}
   \item{Prevalence}{Prevalence of the disease}

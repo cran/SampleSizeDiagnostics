@@ -49,7 +49,7 @@ overflow: visible;
 </style>
 <style type="text/css" data-origin="pandoc">
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -60,7 +60,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
 { counter-reset: source-line 0; }
@@ -354,7 +354,7 @@ sample size for different scenarios.</p>
 <div id="example-usage" class="section level2">
 <h2>Example Usage</h2>
 <p>Load the package:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(SampleSizeDiagnostics)</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(SampleSizeDiagnostics)</span></code></pre></div>
 </div>
 <div id="basic-example" class="section level2">
 <h2>Basic Example</h2>
@@ -363,23 +363,24 @@ following parameters:</p>
 <pre><code>Sensitivity: 0.9
 Specificity: 0.85
 Prevalence: 0.2
-Desired width of the confidence interval: 0.1
+Desired half-width (margin of error) of the confidence interval: 0.1
+  (This creates a total CI width of 0.2: estimate ±0.1)
 Confidence interval level: 0.95</code></pre>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">SampleSizeDiagnostics</span>(<span class="at">sn =</span> <span class="fl">0.9</span>, <span class="at">sp =</span> <span class="fl">0.85</span>, <span class="at">p =</span> <span class="fl">0.2</span>, <span class="at">w =</span> <span class="fl">0.1</span>, <span class="at">CI =</span> <span class="fl">0.95</span>)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(result)</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">SampleSizeDiagnostics</span>(<span class="at">sn =</span> <span class="fl">0.9</span>, <span class="at">sp =</span> <span class="fl">0.85</span>, <span class="at">p =</span> <span class="fl">0.2</span>, <span class="at">w =</span> <span class="fl">0.1</span>, <span class="at">CI =</span> <span class="fl">0.95</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="fu">print</span>(result)</span></code></pre></div>
 </div>
 <div id="varying-the-confidence-interval" class="section level2">
 <h2>Varying the Confidence Interval</h2>
 <p>You can also calculate the sample size with a different confidence
 interval level, for example, 0.9:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">SampleSizeDiagnostics</span>(<span class="at">sn =</span> <span class="fl">0.9</span>, <span class="at">sp =</span> <span class="fl">0.85</span>, <span class="at">p =</span> <span class="fl">0.2</span>, <span class="at">w =</span> <span class="fl">0.1</span>, <span class="at">CI =</span> <span class="fl">0.9</span>)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(result)</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">SampleSizeDiagnostics</span>(<span class="at">sn =</span> <span class="fl">0.9</span>, <span class="at">sp =</span> <span class="fl">0.85</span>, <span class="at">p =</span> <span class="fl">0.2</span>, <span class="at">w =</span> <span class="fl">0.1</span>, <span class="at">CI =</span> <span class="fl">0.9</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="fu">print</span>(result)</span></code></pre></div>
 </div>
 <div id="interpretation-of-results" class="section level2">
 <h2>Interpretation of Results</h2>
 <p>The function returns a data frame containing the calculated sample
 sizes and input parameters. Here is a breakdown of the output:</p>
-<pre><code>Precision: Desired width of the confidence interval
+<pre><code>Precision: Desired half-width of the CI (margin of error). Total width = 2 × Precision
 Sensitivity: Sensitivity of the diagnostic test
 Specificity: Specificity of the diagnostic test
 Prevalence: Prevalence of the disease
@@ -387,6 +388,35 @@ N1: Sample size for sensitivity
 N2: Sample size for specificity
 Total_Subjects: Total sample size needed (maximum of N1 and N2)
 CI: Confidence interval level</code></pre>
+</div>
+<div id="understanding-the-width-parameter" class="section level2">
+<h2>Understanding the Width Parameter</h2>
+<p><strong>IMPORTANT:</strong> The parameter <code>w</code> represents
+the <strong>half-width</strong> or <strong>margin of error</strong> of
+the confidence interval, NOT the total width. This follows Buderer
+(1996).</p>
+<div id="example-interpretation" class="section level3">
+<h3>Example Interpretation</h3>
+<p>If you set <code>w = 0.1</code> with expected sensitivity = 0.9: -
+<strong>Point estimate:</strong> 0.90 - <strong>Margin of error
+(w):</strong> ±0.1 - <strong>95% CI:</strong> [0.80, 1.00] -
+<strong>Half-width:</strong> 0.1 - <strong>Total CI width:</strong>
+0.20</p>
+</div>
+<div id="common-mistake" class="section level3">
+<h3>Common Mistake ⚠️</h3>
+<p>❌ <strong>Wrong:</strong> “I want a CI spanning 0.10 total, so I’ll
+use w = 0.1”<br />
+✅ <strong>Correct:</strong> “I want a CI spanning 0.10 total, so I’ll
+use w = 0.05”</p>
+</div>
+<div id="reference" class="section level3">
+<h3>Reference</h3>
+<p>From Buderer (1996), page 896: &gt; “The width of a 95% CI, where the
+width is given by 1.96 × (SE), gives the precision &gt; in the
+estimates… <strong>(the total length of the CI is 2 ×
+width).</strong>”</p>
+</div>
 </div>
 
 

@@ -34,7 +34,7 @@ This function call will calculate the required sample size for a diagnostic stud
     Sensitivity (sn) of 0.9
     Specificity (sp) of 0.85
     Prevalence (p) of 0.2
-    Width of the confidence interval (w) of 0.1
+    Half-width of the confidence interval (w) of 0.1 [margin of error; total CI width = 0.2]
     Confidence level (CI) of 0.95
 
 ```r
@@ -44,3 +44,22 @@ SampleSizeDiagnostics(sn = 0.9,
                       w = 0.1,
                       CI = 0.95)
 ```
+## Important Note About the Width Parameter
+   
+   ⚠️ **Critical:** The `w` parameter represents the **half-width** (margin of error) of the 
+   confidence interval, not the total width.
+   
+   **What this means:**
+   - `w = 0.1` creates a CI spanning **0.2 units** (estimate ±0.1)
+   - If you want a total CI width of 0.1, use `w = 0.05`
+   
+   **Example:**
+```r
+   SampleSizeDiagnostics(sn = 0.9, sp = 0.85, p = 0.2, w = 0.1, CI = 0.95)
+   # With w = 0.1 and sensitivity estimate of 0.9:
+   # CI will be [0.80, 1.00] 
+   # Half-width (margin of error) = 0.1
+   # Total CI width = 0.20
+```
+   
+   This follows the methodology in Buderer (1996).
